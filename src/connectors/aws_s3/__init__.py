@@ -1,4 +1,4 @@
-"""Amazon S3 / S3-compatible connector for OpenRAG."""
+"""Amazon S3 / S3-compatible connector for BomaRAG."""
 
 from .api import (
     s3_bucket_status,

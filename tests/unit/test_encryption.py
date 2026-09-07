@@ -13,7 +13,7 @@ def setup_encryption_env(monkeypatch):
 
     utils.encryption._cached_master_secret = None
     monkeypatch.setenv(
-        "OPENRAG_ENCRYPTION_KEY",
+        "BOMARAG_ENCRYPTION_KEY",
         base64.b64encode(b"0123456789abcdef0123456789abcdef").decode("ascii"),
     )
 
@@ -46,7 +46,7 @@ def test_encryption_utility():
 def test_config_manager(tmp_path):
     print("Testing config manager encryption...")
     # Create an initial config manager with a temporary file
-    test_yaml = tmp_path / "test_openrag_config.yaml"
+    test_yaml = tmp_path / "test_bomarag_config.yaml"
     if test_yaml.exists():
         test_yaml.unlink()
 
@@ -76,7 +76,7 @@ def test_config_manager(tmp_path):
 @pytest.mark.asyncio
 async def test_connection_manager(tmp_path):
     print("Testing connection manager encryption...")
-    test_json = tmp_path / "test_openrag_connections.json"
+    test_json = tmp_path / "test_bomarag_connections.json"
     if test_json.exists():
         test_json.unlink()
 
@@ -156,7 +156,7 @@ async def test_connection_manager(tmp_path):
 
 
 def test_auto_upgrade_features(tmp_path):
-    test_yaml = tmp_path / "test_openrag_config_upgrade.yaml"
+    test_yaml = tmp_path / "test_bomarag_config_upgrade.yaml"
     import yaml
 
     # Write purely plaintext config

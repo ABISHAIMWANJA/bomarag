@@ -23,13 +23,16 @@ import { buildSearchPayloadFilters } from "@/lib/filter-normalization";
 import { OnboardingStep } from "./onboarding-step";
 import OnboardingUpload from "./onboarding-upload";
 
-// Filters for OpenRAG documentation
-const OPENRAG_DOCS_FILTERS: FilterInput = {
+// Filters for BomaRAG documentation
+const BOMARAG_DOCS_FILTERS: FilterInput = {
   data_sources: [],
   document_types: [],
   owners: [],
-  connector_types: ["openrag_docs"],
+  connector_types: ["bomarag_docs"],
 };
+
+// Static onboarding prompt; hoisted so it keeps a stable identity across renders.
+const NUDGES = ["What is BomaRAG?"];
 
 const sanitizeCitationResult = (item: ToolCallResult): ToolCallResult => {
   const data = (() => {
@@ -190,13 +193,13 @@ export function OnboardingContent({
         setCurrentConversationId(newResponseId);
 
         // Get filter ID from backend settings
-        const openragDocsFilterId =
-          settings?.onboarding?.openrag_docs_filter_id;
-        if (openragDocsFilterId) {
+        const bomaragDocsFilterId =
+          settings?.onboarding?.bomarag_docs_filter_id;
+        if (bomaragDocsFilterId) {
           try {
             // Load the filter and set it in the context with explicit responseId
             // This ensures the filter is saved to localStorage with the correct conversation ID
-            const filter = await getFilterById(openragDocsFilterId);
+            const filter = await getFilterById(bomaragDocsFilterId);
             if (filter) {
               // Pass explicit newResponseId to ensure correct localStorage association
               setConversationFilter(filter, newResponseId);
@@ -229,8 +232,6 @@ export function OnboardingContent({
     },
   });
 
-  const NUDGES = ["What is OpenRAG?"];
-
   const handleNudgeClick = async (nudge: string) => {
     trackButton({
       CTA: `Learn Basics - ${nudge}`,
@@ -247,21 +248,21 @@ export function OnboardingContent({
     });
 
     setTimeout(async () => {
-      // Check if we have the OpenRAG docs filter ID (sample data was ingested)
-      const openragDocsFilterId = settings?.onboarding?.openrag_docs_filter_id;
+      // Check if we have the BomaRAG docs filter ID (sample data was ingested)
+      const bomaragDocsFilterId = settings?.onboarding?.bomarag_docs_filter_id;
 
-      // Load and set the OpenRAG docs filter if available
+      // Load and set the BomaRAG docs filter if available
       let filterToUse = null;
-      if (openragDocsFilterId) {
+      if (bomaragDocsFilterId) {
         try {
-          const filter = await getFilterById(openragDocsFilterId);
+          const filter = await getFilterById(bomaragDocsFilterId);
           if (filter) {
             // Pass null to skip localStorage save - no conversation exists yet
             setConversationFilter(filter, null);
             filterToUse = filter;
           }
         } catch (error) {
-          console.error("Failed to load OpenRAG docs filter:", error);
+          console.error("Failed to load BomaRAG docs filter:", error);
         }
       }
       await sendMessage({
@@ -269,8 +270,8 @@ export function OnboardingContent({
         previousResponseId: responseId || undefined,
         // Send both filter_id and filters (selections)
         filter_id: filterToUse?.id,
-        filters: openragDocsFilterId
-          ? buildSearchPayloadFilters(OPENRAG_DOCS_FILTERS)
+        filters: bomaragDocsFilterId
+          ? buildSearchPayloadFilters(BOMARAG_DOCS_FILTERS)
           : undefined,
       });
     }, 1500);

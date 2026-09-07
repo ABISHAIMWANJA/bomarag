@@ -55,7 +55,7 @@ def _svc(session_factory) -> SessionOwnershipService:
 
 @pytest.mark.asyncio
 async def test_db_mode_writes_to_db_only(monkeypatch, tmp_data_dir, session_factory):
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "db")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "db")
     svc = _svc(session_factory)
 
     await svc.claim_session("user-a", "sess-1")
@@ -72,7 +72,7 @@ async def test_db_mode_writes_to_db_only(monkeypatch, tmp_data_dir, session_fact
 
 @pytest.mark.asyncio
 async def test_files_mode_writes_to_json_only(monkeypatch, tmp_data_dir, session_factory):
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "files")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "files")
     svc = _svc(session_factory)
 
     await svc.claim_session("user-a", "sess-1")
@@ -90,7 +90,7 @@ async def test_files_mode_writes_to_json_only(monkeypatch, tmp_data_dir, session
 
 @pytest.mark.asyncio
 async def test_hybrid_mode_writes_both(monkeypatch, tmp_data_dir, session_factory):
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "hybrid")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "hybrid")
     svc = _svc(session_factory)
 
     await svc.claim_session("user-a", "sess-1")
@@ -111,7 +111,7 @@ async def test_db_mode_ignores_pre_existing_json(monkeypatch, tmp_data_dir, sess
         )
     )
 
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "db")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "db")
     svc = _svc(session_factory)
 
     owner = await svc.get_session_owner("ghost-sess")
@@ -122,7 +122,7 @@ async def test_db_mode_ignores_pre_existing_json(monkeypatch, tmp_data_dir, sess
 async def test_cross_user_ownership_check(monkeypatch, tmp_data_dir, session_factory):
     """User B must not see User A's sessions in any mode."""
     for mode in ("db", "files", "hybrid"):
-        monkeypatch.setenv("OPENRAG_STORAGE_MODE", mode)
+        monkeypatch.setenv("BOMARAG_STORAGE_MODE", mode)
         # Fresh service per mode so the in-memory dict and JSON are reset
         if tmp_data_dir.exists():
             tmp_data_dir.unlink()
@@ -135,7 +135,7 @@ async def test_cross_user_ownership_check(monkeypatch, tmp_data_dir, session_fac
 
 @pytest.mark.asyncio
 async def test_release_only_owner_can_release(monkeypatch, tmp_data_dir, session_factory):
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "db")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "db")
     svc = _svc(session_factory)
 
     await svc.claim_session("alice", "sess-1")

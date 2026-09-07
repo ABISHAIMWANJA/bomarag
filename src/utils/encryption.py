@@ -27,13 +27,13 @@ def get_master_secret() -> str | None:
     if _cached_master_secret is not None:
         return _cached_master_secret
 
-    secret_str = os.environ.get("OPENRAG_ENCRYPTION_KEY")
+    secret_str = os.environ.get("BOMARAG_ENCRYPTION_KEY")
 
     if not secret_str:
-        if os.environ.get("OPENRAG_ENFORCE_PREREQUISITES", "false").lower() in ("true", "1", "yes"):
+        if os.environ.get("BOMARAG_ENFORCE_PREREQUISITES", "false").lower() in ("true", "1", "yes"):
             raise RuntimeError(
-                "CRITICAL: OPENRAG_ENFORCE_PREREQUISITES is enabled but no master encryption key "
-                "could be retrieved from OPENRAG_ENCRYPTION_KEY. "
+                "CRITICAL: BOMARAG_ENFORCE_PREREQUISITES is enabled but no master encryption key "
+                "could be retrieved from BOMARAG_ENCRYPTION_KEY. "
                 "Application will not start in unencrypted mode."
             )
         return None
@@ -56,7 +56,7 @@ def enforce_startup_prerequisites():
         sys.exit(1)
 
 
-def encrypt_secret(plaintext: str, tenant_id: str = "openrag") -> dict[str, Any] | str:
+def encrypt_secret(plaintext: str, tenant_id: str = "bomarag") -> dict[str, Any] | str:
     """
     Encrypt a plaintext secret using AES-256-GCM and PBKDF2HMAC.
     Returns a JSON-serializable dictionary with the ciphertext and metadata.
@@ -152,7 +152,7 @@ def decrypt_secret(payload: dict[str, Any] | str, expected_tenant_id: str | None
             tenant_id = expected_tenant_id
         else:
             # Backwards-compatible behaviour when no external tenant binding is configured.
-            tenant_id = payload_tenant_id or "openrag"
+            tenant_id = payload_tenant_id or "bomarag"
 
         aad = f"tenant_id:{tenant_id}".encode()
 
@@ -180,7 +180,7 @@ async def read_encrypted_file(file_path: str) -> tuple[str | None, bool]:
 
         file_json = json.loads(raw_data)
         if isinstance(file_json, dict) and file_json.get("algorithm") == ENCRYPTION_ALGORITHM:
-            expected_tenant_id = os.getenv("OPENRAG_TENANT_ID")
+            expected_tenant_id = os.getenv("BOMARAG_TENANT_ID")
             decrypted_str = decrypt_secret(file_json, expected_tenant_id=expected_tenant_id)
             return decrypted_str, False
         else:
@@ -200,7 +200,7 @@ async def write_encrypted_file(file_path: str, data: str):
     """
     Encrypts string data (if key is present) and writes to file.
     """
-    tenant_id = os.getenv("OPENRAG_TENANT_ID") or "openrag"
+    tenant_id = os.getenv("BOMARAG_TENANT_ID") or "bomarag"
     encrypted = encrypt_secret(data, tenant_id=tenant_id)
     payload_to_write = json.dumps(encrypted, indent=2) if isinstance(encrypted, dict) else data
 

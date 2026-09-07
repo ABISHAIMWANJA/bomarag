@@ -1,4 +1,4 @@
-"""Telemetry client for OpenRAG backend using Scarf."""
+"""Telemetry client for BomaRAG backend using Scarf."""
 
 import asyncio
 import os
@@ -10,13 +10,13 @@ from urllib.parse import urlencode
 import httpx
 
 from utils.logging_config import get_logger
-from utils.version_utils import OPENRAG_VERSION
+from utils.version_utils import BOMARAG_VERSION
 
 logger = get_logger(__name__)
 
 # Constants
 SCARF_BASE_URL_DEFAULT = "https://langflow.gateway.scarf.sh"
-SCARF_PATH = "openrag"
+SCARF_PATH = "bomarag"
 CLIENT_TYPE = "backend"
 PLATFORM_TYPE = "backend"
 
@@ -47,7 +47,7 @@ def _get_http_client() -> httpx.AsyncClient | None:
                     pool=HTTP_CONNECT_TIMEOUT,
                 ),
                 headers={
-                    "User-Agent": f"OpenRAG-Backend/{OPENRAG_VERSION}",
+                    "User-Agent": f"BomaRAG-Backend/{BOMARAG_VERSION}",
                 },
             )
             logger.debug("Telemetry HTTP client initialized")
@@ -197,13 +197,13 @@ async def _send_scarf_event(
     gpu_info = _get_gpu_info()
     timestamp = _get_current_utc()
     effective_base_url = _get_effective_base_url()
-    # Build URL with format: /openrag/{platform}.{version}
-    base_url = f"{effective_base_url}/{SCARF_PATH}/{PLATFORM_TYPE}.{OPENRAG_VERSION}"
+    # Build URL with format: /bomarag/{platform}.{version}
+    base_url = f"{effective_base_url}/{SCARF_PATH}/{PLATFORM_TYPE}.{BOMARAG_VERSION}"
 
     # Build query parameters
     params = {
         "clientType": CLIENT_TYPE,
-        "openrag_version": OPENRAG_VERSION,
+        "bomarag_version": BOMARAG_VERSION,
         "platform": PLATFORM_TYPE,
         "os": os_name,
         "os_version": os_version,

@@ -21,15 +21,15 @@ def test_enforce_prerequisites_fail():
     with patch.dict(
         os.environ,
         {
-            "OPENRAG_ENFORCE_PREREQUISITES": "true",
-            "OPENRAG_ENCRYPTION_KEY": "",
+            "BOMARAG_ENFORCE_PREREQUISITES": "true",
+            "BOMARAG_ENCRYPTION_KEY": "",
             "IBM_AUTH_ENABLED": "false",
         },
     ):
         with pytest.raises(RuntimeError) as excinfo:
             get_master_secret()
         assert (
-            "OPENRAG_ENFORCE_PREREQUISITES is enabled but no master encryption key could be retrieved"
+            "BOMARAG_ENFORCE_PREREQUISITES is enabled but no master encryption key could be retrieved"
             in str(excinfo.value)
         )
 
@@ -39,8 +39,8 @@ def test_enforce_prerequisites_success():
     with patch.dict(
         os.environ,
         {
-            "OPENRAG_ENFORCE_PREREQUISITES": "true",
-            "OPENRAG_ENCRYPTION_KEY": "some-key",
+            "BOMARAG_ENFORCE_PREREQUISITES": "true",
+            "BOMARAG_ENCRYPTION_KEY": "some-key",
             "IBM_AUTH_ENABLED": "false",
         },
     ):
@@ -53,8 +53,8 @@ def test_no_enforce_prerequisites_none():
     with patch.dict(
         os.environ,
         {
-            "OPENRAG_ENFORCE_PREREQUISITES": "false",
-            "OPENRAG_ENCRYPTION_KEY": "",
+            "BOMARAG_ENFORCE_PREREQUISITES": "false",
+            "BOMARAG_ENCRYPTION_KEY": "",
             "IBM_AUTH_ENABLED": "false",
         },
     ):

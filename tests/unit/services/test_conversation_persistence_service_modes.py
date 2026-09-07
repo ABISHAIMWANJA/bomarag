@@ -59,7 +59,7 @@ def _payload(title="Hello", endpoint="chat") -> dict:
 
 @pytest.mark.asyncio
 async def test_db_mode_writes_to_db_only(monkeypatch, storage_path, session_factory):
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "db")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "db")
     svc = _svc(storage_path, session_factory)
 
     await svc.store_conversation_thread("alice", "r-1", _payload())
@@ -78,7 +78,7 @@ async def test_db_mode_writes_to_db_only(monkeypatch, storage_path, session_fact
 
 @pytest.mark.asyncio
 async def test_files_mode_writes_to_json_only(monkeypatch, storage_path, session_factory):
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "files")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "files")
     svc = _svc(storage_path, session_factory)
 
     await svc.store_conversation_thread("alice", "r-1", _payload())
@@ -94,7 +94,7 @@ async def test_files_mode_writes_to_json_only(monkeypatch, storage_path, session
 
 @pytest.mark.asyncio
 async def test_hybrid_mode_dual_writes(monkeypatch, storage_path, session_factory):
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "hybrid")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "hybrid")
     svc = _svc(storage_path, session_factory)
 
     await svc.store_conversation_thread("alice", "r-1", _payload())
@@ -110,7 +110,7 @@ async def test_db_mode_ignores_pre_existing_json(monkeypatch, storage_path, sess
         json.dumps({"alice": {"ghost-r": {"title": "leak", "total_messages": 1}}})
     )
 
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "db")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "db")
     svc = _svc(storage_path, session_factory)
 
     convs = await svc.get_user_conversations("alice")
@@ -119,7 +119,7 @@ async def test_db_mode_ignores_pre_existing_json(monkeypatch, storage_path, sess
 
 @pytest.mark.asyncio
 async def test_hybrid_merges_db_and_json_on_read(monkeypatch, storage_path, session_factory):
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "hybrid")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "hybrid")
 
     # Seed JSON with one entry
     storage_path.write_text(
@@ -137,7 +137,7 @@ async def test_hybrid_merges_db_and_json_on_read(monkeypatch, storage_path, sess
 
 @pytest.mark.asyncio
 async def test_delete_only_owner_can_delete(monkeypatch, storage_path, session_factory):
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "db")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "db")
     svc = _svc(storage_path, session_factory)
 
     await svc.store_conversation_thread("alice", "r-1", _payload())
@@ -151,7 +151,7 @@ async def test_delete_only_owner_can_delete(monkeypatch, storage_path, session_f
 
 @pytest.mark.asyncio
 async def test_clear_user_removes_all_their_threads(monkeypatch, storage_path, session_factory):
-    monkeypatch.setenv("OPENRAG_STORAGE_MODE", "db")
+    monkeypatch.setenv("BOMARAG_STORAGE_MODE", "db")
     svc = _svc(storage_path, session_factory)
 
     p1 = _payload()

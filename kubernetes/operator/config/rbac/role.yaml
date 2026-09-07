@@ -62,6 +62,32 @@ rules:
   - update
   - watch
 - apiGroups:
+  - bomalogic.com
+  resources:
+  - bomarags
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - bomalogic.com
+  resources:
+  - bomarags/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - bomalogic.com
+  resources:
+  - bomarags/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - coordination.k8s.io
   resources:
   - leases
@@ -85,29 +111,3 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - openr.ag
-  resources:
-  - openrags
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - openr.ag
-  resources:
-  - openrags/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - openr.ag
-  resources:
-  - openrags/status
-  verbs:
-  - get
-  - patch
-  - update

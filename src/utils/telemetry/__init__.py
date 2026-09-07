@@ -1,4 +1,4 @@
-"""Telemetry module for OpenRAG backend."""
+"""Telemetry module for BomaRAG backend."""
 
 from .category import Category
 from .client import TelemetryClient

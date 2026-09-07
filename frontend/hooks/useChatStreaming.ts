@@ -13,8 +13,8 @@ import {
 import {
   detectImplicitToolCall,
   detectRAGFromContent,
+  parseBomaRAGChunk,
   parseOpenAIChatChunk,
-  parseOpenRAGChunk,
   parseRealtimeChunk,
 } from "@/lib/chat-stream-parsers";
 import type { FilterInput } from "@/lib/filter-normalization";
@@ -29,7 +29,7 @@ interface UseChatStreamingOptions {
 interface SendMessageOptions {
   prompt: string;
   previousResponseId?: string;
-  /** OpenRAG sidebar thread id (kept after errors; distinct from Langflow session). */
+  /** BomaRAG sidebar thread id (kept after errors; distinct from Langflow session). */
   conversationId?: string;
   filters?: FilterInput;
   filter_id?: string;
@@ -201,7 +201,7 @@ export function useChatStreaming({
                     currentFunctionCalls,
                     usage,
                   ) ||
-                  parseOpenRAGChunk(chunk, content);
+                  parseBomaRAGChunk(chunk, content);
                 detectImplicitToolCall(chunk, currentFunctionCalls);
 
                 const streamError = extractStreamProviderError(chunk);
